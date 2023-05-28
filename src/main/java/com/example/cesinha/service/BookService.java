@@ -16,21 +16,21 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @Service
-public class BookService {
+public class BookService implements CrudService<Book, Long, BookRequest> {
 
     private final BookRepository bookRepository;
 
-    public List<Book> fetchAllBooks() {
+    public List<Book> fetchAll() {
         return bookRepository.findAll();
     }
 
-    public Book fetchBookById(Long id) {
+    public Book fetchById(Long id) {
         return bookRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ResourcesEnum.BOOK, id));
     }
 
-    public Book insertBook(BookRequest request) {
+    public Book insert(BookRequest request) {
         Book book = new Book(
                 request.getName(),
                 request.getIsbn(),
@@ -46,8 +46,8 @@ public class BookService {
         return book;
     }
 
-    public Book updateBook(Long id, BookRequest request) {
-        Book book = fetchBookById(id);
+    public Book update(Long id, BookRequest request) {
+        Book book = fetchById(id);
 
         Optional.ofNullable(request.getName()).ifPresent(book::setName);
         Optional.ofNullable(request.getIsbn()).ifPresent(book::setIsbn);
@@ -58,8 +58,13 @@ public class BookService {
         return book;
     }
 
-    public void deleteBook(Long id) {
-        fetchBookById(id);
+    public void delete(Long id) {
+        fetchById(id);
         bookRepository.deleteById(id);
+    }
+
+    @Override
+    public Long getEntityId(Book entity) {
+        return entity.getId();
     }
 }

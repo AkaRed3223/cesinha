@@ -16,21 +16,21 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @Service
-public class StudentService {
+public class StudentService implements CrudService<Student, Long, StudentRequest> {
 
     private final StudentRepository studentRepository;
 
-    public List<Student> fetchAllStudents() {
+    public List<Student> fetchAll() {
         return studentRepository.findAll();
     }
 
-    public Student fetchStudentById(Long id) {
+    public Student fetchById(Long id) {
         return studentRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ResourcesEnum.STUDENT, id));
     }
 
-    public Student insertStudent(StudentRequest request) {
+    public Student insert(StudentRequest request) {
         Student student = new Student(
                 request.getFirstName(),
                 request.getLastName(),
@@ -47,8 +47,8 @@ public class StudentService {
         return student;
     }
 
-    public Student updateStudent(Long id, StudentRequest request) {
-        Student student = fetchStudentById(id);
+    public Student update(Long id, StudentRequest request) {
+        Student student = fetchById(id);
 
         Optional.ofNullable(request.getFirstName()).ifPresent(student::setFirstName);
         Optional.ofNullable(request.getLastName()).ifPresent(student::setLastName);
@@ -60,8 +60,13 @@ public class StudentService {
         return student;
     }
 
-    public void deleteStudent(Long id) {
-        fetchStudentById(id);
+    public void delete(Long id) {
+        fetchById(id);
         studentRepository.deleteById(id);
+    }
+
+    @Override
+    public Long getEntityId(Student entity) {
+        return entity.getId();
     }
 }
