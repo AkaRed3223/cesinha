@@ -1,6 +1,8 @@
 package com.example.cesinha.controller;
 
 import com.example.cesinha.domain.model.Book;
+import com.example.cesinha.domain.request.BookRequest;
+import com.example.cesinha.service.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +19,7 @@ public class BookController {
 
     @GetMapping
     public ResponseEntity<List<Book>> fetchAllBooks() {
-        return ResponseEntity.ok(bookService.fetchAllBooks);
+        return ResponseEntity.ok(bookService.fetchAllBooks());
     }
 
     @GetMapping("/{id}")

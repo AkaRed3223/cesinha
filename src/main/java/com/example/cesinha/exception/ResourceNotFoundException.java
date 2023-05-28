@@ -1,6 +1,5 @@
 package com.example.cesinha.exception;
 
-
 import com.example.cesinha.constants.ResourcesEnum;
 
 public class ResourceNotFoundException extends RuntimeException {

@@ -1,11 +1,14 @@
 package com.example.cesinha.service;
 
 import com.example.cesinha.constants.ResourcesEnum;
+import com.example.cesinha.constants.ResourcesFieldsEnum;
 import com.example.cesinha.domain.model.Student;
 import com.example.cesinha.domain.request.StudentRequest;
+import com.example.cesinha.exception.ResourceAlreadyExistsException;
 import com.example.cesinha.exception.ResourceNotFoundException;
 import com.example.cesinha.repository.StudentRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,7 +38,12 @@ public class StudentService {
                 request.getAge()
         );
 
-        studentRepository.save(student);
+        try {
+            studentRepository.save(student);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResourceAlreadyExistsException(ResourcesEnum.STUDENT, ResourcesFieldsEnum.EMAIL, request.getEmail());
+        }
+
         return student;
     }
 
